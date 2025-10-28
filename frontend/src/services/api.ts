@@ -20,7 +20,7 @@ const getBackendUrl = () => {
 
   // Wenn über frontend.local zugegriffen wird
   if (hostname === 'frontend.local') {
-    return 'http://backend.local'
+    return 'http://backend.local:8081'
   }
 
   // Sonst: Nutze die gleiche IP wie das Frontend, aber Port 8080

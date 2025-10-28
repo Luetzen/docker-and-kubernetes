@@ -77,18 +77,6 @@ docker push ghcr.io/dein-username/frontend:latest
 docker push ghcr.io/dein-username/frontend:1.0.0
 ```
 
-### Nginx Proxy Image
-
-```cmd
-REM 1. In nginx Verzeichnis wechseln
-cd nginx
-
-REM 2. Image bauen
-docker build -t ghcr.io/dein-username/nginx-proxy:latest .
-
-REM 3. Image pushen
-docker push ghcr.io/dein-username/nginx-proxy:latest
-```
 
 ## Alle Images auf einmal bauen und pushen
 
@@ -119,14 +107,6 @@ docker push ghcr.io/%GITHUB_USER%/frontend:%VERSION%
 cd ..
 
 echo ========================================
-echo Building and pushing Nginx...
-echo ========================================
-cd nginx
-docker build -t ghcr.io/%GITHUB_USER%/nginx-proxy:latest .
-docker push ghcr.io/%GITHUB_USER%/nginx-proxy:latest
-cd ..
-
-echo ========================================
 echo All images pushed successfully!
 echo ========================================
 ```
@@ -153,20 +133,25 @@ services:
     image: ghcr.io/dein-username/backend:latest
     # Kein 'build' mehr nötig, da Image von ghcr.io geholt wird
     container_name: backend
-    ports:
-      - "8080:8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
     # ... rest der config
 
   frontend:
     image: ghcr.io/dein-username/frontend:latest
     container_name: frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
     # ... rest der config
 
-  nginx:
-    image: ghcr.io/dein-username/nginx-proxy:latest
-    container_name: nginx-proxy
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
     ports:
       - "80:80"
+      - "8080:8080"
     # ... rest der config
 ```
 

@@ -26,8 +26,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: frontend:1.0.0  # Ersetze mit deinem Registry-Image
-        imagePullPolicy: IfNotPresent
+        image: ghcr.io/luetzen/docker-and-kubernetes/frontend:latest
+        imagePullPolicy: Always
         ports:
         - name: http
           containerPort: 80

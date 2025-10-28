@@ -32,7 +32,7 @@ pause
 REM Backend Image
 echo.
 echo ========================================
-echo [1/3] Building Backend Image...
+echo [1/2] Building Backend Image...
 echo ========================================
 cd backend
 docker build -t ghcr.io/%GITHUB_USER%/%REPO_NAME%/backend:latest -t ghcr.io/%GITHUB_USER%/%REPO_NAME%/backend:%VERSION% .
@@ -58,7 +58,7 @@ cd ..
 REM Frontend Image
 echo.
 echo ========================================
-echo [2/3] Building Frontend Image...
+echo [2/2] Building Frontend Image...
 echo ========================================
 cd frontend
 docker build -t ghcr.io/%GITHUB_USER%/%REPO_NAME%/frontend:latest -t ghcr.io/%GITHUB_USER%/%REPO_NAME%/frontend:%VERSION% .

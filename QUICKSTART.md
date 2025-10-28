@@ -2,30 +2,31 @@
 
 Schnelleinstieg für das Docker & Kubernetes Lernprojekt.
 
-## Option 1: Mit Docker Compose (Am einfachsten!)
+## Option 1: Mit Docker Compose (Am einfachsten! ⚡)
 
-### Schritt 1: Repository klonen (falls noch nicht geschehen)
+### Voraussetzungen
 
-```cmd
-cd C:\Users\luetz\projects\docker-and-kubernetes
-```
+- Docker Desktop installiert und gestartet
 
-### Schritt 2: Umgebungsvariablen kopieren
+### Schritt 1: Repository klonen
 
 ```cmd
-copy .env.example .env
+git clone https://github.com/luetzen/docker-and-kubernetes.git
+cd docker-and-kubernetes
 ```
 
-### Schritt 3: Mit Docker Compose starten
+### Schritt 2: Mit Docker Compose starten
 
 ```cmd
 docker-compose up -d
 ```
 
-**Das war's!** Die Anwendung startet jetzt:
-- Frontend: http://localhost:8081
-- Backend: http://localhost:8080
-- Database: localhost:1521
+**Das war's!** Docker lädt automatisch die fertigen Images von GitHub Container Registry herunter und startet die Anwendung:
+- 🌐 Frontend: http://localhost (Nginx Proxy)
+- 🔧 Backend API: http://localhost:8080
+- 💾 Database: localhost:1521
+
+> **Hinweis:** Beim ersten Start dauert es ca. 2-3 Minuten, da die Oracle-Datenbank initialisiert werden muss.
 
 ### Logs anzeigen
 
@@ -41,49 +42,45 @@ docker-compose down
 
 ---
 
-## Option 2: Mit Kubernetes (k3s)
+## Option 2: Lokale Entwicklung mit Build
+
+Wenn du am Code arbeiten möchtest und lokale Änderungen testen willst:
+
+```cmd
+docker-compose -f docker-compose.dev.yml up -d --build
+```
+
+Dies baut die Images lokal aus deinem Sourcecode.
+
+---
+
+## Option 3: Mit Kubernetes (k3s)
 
 ### Voraussetzungen
 
 - k3s installiert
 - kubectl konfiguriert
 
-### Schritt 1: Docker Images bauen
+### Schritt 1: Images verwenden
 
-```cmd
-cd backend
-docker build -t backend:1.0.0 --build-arg APP_VERSION=1.0.0 .
+Die Images sind öffentlich verfügbar auf ghcr.io:
+- `ghcr.io/luetzen/docker-and-kubernetes/backend:latest`
+- `ghcr.io/luetzen/docker-and-kubernetes/frontend:latest`
+- `ghcr.io/luetzen/docker-and-kubernetes/nginx-proxy:latest`
 
-cd ..\frontend
-docker build -t frontend:1.0.0 --build-arg APP_VERSION=1.0.0 .
-
-cd ..
-```
-
-### Schritt 2: Images in k3s laden
-
-```cmd
-docker save backend:1.0.0 -o backend.tar
-docker save frontend:1.0.0 -o frontend.tar
-
-REM Auf Linux/k3s Server:
-REM sudo k3s ctr images import backend.tar
-REM sudo k3s ctr images import frontend.tar
-```
-
-### Schritt 3A: Mit Kubernetes YAMLs deployen
+### Schritt 2A: Mit Kubernetes YAMLs deployen
 
 ```cmd
 kubectl apply -f kubernetes/
 ```
 
-### Schritt 3B: ODER mit Helm deployen (empfohlen!)
+### Schritt 2B: ODER mit Helm deployen (empfohlen!)
 
 ```cmd
 helm install myapp .\helm\fullstack-app
 ```
 
-### Schritt 4: Hosts-Datei anpassen
+### Schritt 3: Hosts-Datei anpassen
 
 Öffne `C:\Windows\System32\drivers\etc\hosts` als Administrator und füge hinzu:
 
@@ -91,9 +88,63 @@ helm install myapp .\helm\fullstack-app
 127.0.0.1 myapp.local
 ```
 
-### Schritt 5: Im Browser öffnen
+### Schritt 4: Im Browser öffnen
 
 http://myapp.local
+
+---
+
+## Verfügbare Endpunkte
+
+Nach dem Start sind folgende Endpunkte verfügbar:
+
+### Frontend (Vue.js)
+- http://localhost - Hauptanwendung
+- http://localhost/products - Produktliste
+
+### Backend (Spring Boot)
+- http://localhost:8080/api/health - Health Check
+- http://localhost:8080/api/products - REST API für Produkte
+
+### Datenbank (Oracle)
+- Host: localhost
+- Port: 1521
+- Service: FREEPDB1
+- User: appuser
+- Password: Oracle123
+
+---
+
+## Troubleshooting
+
+### "Cannot connect to database"
+
+Warte 2-3 Minuten nach dem Start. Die Oracle-Datenbank braucht etwas Zeit zum Initialisieren.
+
+```cmd
+REM Status prüfen
+docker-compose ps
+docker logs oracle-db
+```
+
+### Port bereits belegt
+
+Falls Port 80 oder 8080 bereits belegt ist:
+
+```cmd
+REM Stoppe den laufenden Service oder ändere die Ports in docker-compose.yml
+```
+
+### Images nicht gefunden
+
+Prüfe deine Internetverbindung. Docker muss die Images von ghcr.io herunterladen können.
+
+```cmd
+REM Manuell pullen
+docker pull ghcr.io/luetzen/docker-and-kubernetes/backend:latest
+docker pull ghcr.io/luetzen/docker-and-kubernetes/frontend:latest
+docker pull ghcr.io/luetzen/docker-and-kubernetes/nginx-proxy:latest
+```
 
 ---
 

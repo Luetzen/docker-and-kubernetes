@@ -14,7 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
                     "http://localhost:*",
                     "http://192.168.*.*:*",
                     "http://172.*.*.*:*",
-                    "http://frontend.local"
+                    "http://frontend.local",
+                    "http://frontend.local:*"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
