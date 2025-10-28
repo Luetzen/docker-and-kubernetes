@@ -1,0 +1,55 @@
+✅ Fullstack Application deployed successfully!
+
+Release Name: {{ .Release.Name }}
+Namespace: {{ .Values.global.namespace }}
+
+📦 Components deployed:
+{{- if .Values.database.enabled }}
+  ✓ Database (Oracle Express)
+{{- end }}
+{{- if .Values.backend.enabled }}
+  ✓ Backend (Spring Boot)
+{{- end }}
+{{- if .Values.frontend.enabled }}
+  ✓ Frontend (Vue.js)
+{{- end }}
+
+🌐 To access your application:
+
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+
+1. Add to your hosts file (C:\Windows\System32\drivers\etc\hosts on Windows):
+   127.0.0.1 {{ .host }}
+
+2. Open in browser:
+   http://{{ .host }}
+{{- end }}
+
+{{- else }}
+
+Use port-forwarding:
+
+# Frontend
+kubectl port-forward -n {{ .Values.global.namespace }} svc/frontend-service 8081:80
+
+# Backend
+kubectl port-forward -n {{ .Values.global.namespace }} svc/backend-service 8080:8080
+
+Then open:
+- Frontend: http://localhost:8081
+- Backend API: http://localhost:8080/api
+{{- end }}
+
+📊 Check deployment status:
+kubectl get all -n {{ .Values.global.namespace }}
+
+📝 View logs:
+kubectl logs -f deployment/{{ .Values.backend.name }} -n {{ .Values.global.namespace }}
+kubectl logs -f deployment/{{ .Values.frontend.name }} -n {{ .Values.global.namespace }}
+
+⚠️  Note: Database initialization may take 1-2 minutes.
+Wait for all pods to be ready before accessing the application.
+
+🎉 Happy Learning with Docker & Kubernetes!
+

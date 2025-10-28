@@ -1,0 +1,15 @@
+# Konfiguration für Docker Container
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@database:1521/FREEPDB1
+    username: appuser
+    password: ${DB_PASSWORD:Oracle123}
+
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    root: INFO
+    com.example.backend: DEBUG
+

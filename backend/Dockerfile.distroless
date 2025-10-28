@@ -1,0 +1,39 @@
+# Docker multi-stage build mit DISTROLESS Image (Minimal & Sicher)
+
+# --- BUILDER STAGE ---
+FROM maven:3.9.9-eclipse-temurin-21 as builder
+
+ARG APP_VERSION=1.0.0
+
+WORKDIR /build
+
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
+RUN mvn clean package -DskipTests -Drevision=${APP_VERSION}
+
+# --- FINAL STAGE mit DISTROLESS ---
+# Distroless Images enthalten nur die Runtime, keinen Package Manager, keine Shell
+# Dadurch deutlich kleiner und sicherer (keine Angriffsfläche)
+FROM gcr.io/distroless/java21-debian12
+
+LABEL maintainer="luetzen.nahne@gmail.com"
+LABEL description="Spring Boot Backend (Distroless - Minimal & Sicher)"
+
+WORKDIR /app
+
+# JAR kopieren
+COPY --from=builder /build/target/*.jar app.jar
+
+# Non-root User (in distroless bereits vorhanden: nonroot=65532)
+USER nonroot
+
+EXPOSE 8080
+
+# Hinweis: HEALTHCHECK funktioniert nicht in distroless (kein wget/curl)
+# Health Checks müssen in Kubernetes definiert werden
+
+# Distroless hat keine Shell, daher direkter ENTRYPOINT
+ENTRYPOINT ["java", "-Xms256m", "-Xmx512m", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app/app.jar"]
+

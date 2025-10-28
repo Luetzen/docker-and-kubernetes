@@ -1,0 +1,23 @@
+# ConfigMap für Backend-Konfiguration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: fullstack-app
+data:
+  DB_HOST: "database-service"
+  DB_PORT: "1521"
+  DB_SERVICE: "FREEPDB1"
+  DB_USER: "appuser"
+  SPRING_PROFILES_ACTIVE: "docker"
+  JAVA_OPTS: "-Xms256m -Xmx512m"
+---
+# ConfigMap für Frontend-Konfiguration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: fullstack-app
+data:
+  BACKEND_URL: "http://backend-service:8080"
+

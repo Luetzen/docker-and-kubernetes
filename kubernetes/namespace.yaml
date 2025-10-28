@@ -1,0 +1,9 @@
+# Namespace für unsere Anwendung
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fullstack-app
+  labels:
+    name: fullstack-app
+    environment: production
+

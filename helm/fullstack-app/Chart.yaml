@@ -1,0 +1,15 @@
+apiVersion: v2
+name: fullstack-app
+description: A Helm chart for Fullstack Application (Spring Boot + Vue.js + Oracle DB)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - spring-boot
+  - vue
+  - oracle
+  - fullstack
+maintainers:
+  - name: Your Name
+    email: your.email@example.com
+

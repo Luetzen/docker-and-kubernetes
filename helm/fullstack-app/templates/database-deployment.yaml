@@ -1,0 +1,72 @@
+{{- if .Values.database.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.database.name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "fullstack-app.database.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Values.database.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.database.name }}
+        component: database
+    spec:
+      containers:
+      - name: oracle
+        image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+        imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+        ports:
+        - name: oracle
+          containerPort: {{ .Values.database.service.port }}
+        - name: oem
+          containerPort: {{ .Values.database.service.oemPort }}
+        env:
+        - name: ORACLE_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secret.name }}
+              key: ORACLE_PWD
+        - name: ORACLE_CHARACTERSET
+          value: "AL32UTF8"
+        {{- if .Values.database.persistence.enabled }}
+        volumeMounts:
+        - name: oracle-data
+          mountPath: /opt/oracle/oradata
+        {{- end }}
+        resources:
+          {{- toYaml .Values.database.resources | nindent 10 }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - healthcheck.sh
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 5
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - healthcheck.sh
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+      {{- if .Values.database.persistence.enabled }}
+      volumes:
+      - name: oracle-data
+        persistentVolumeClaim:
+          claimName: database-pvc
+      {{- end }}
+{{- end }}
+

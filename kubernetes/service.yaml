@@ -1,0 +1,59 @@
+# Database Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+  namespace: fullstack-app
+  labels:
+    app: database
+spec:
+  type: ClusterIP
+  selector:
+    app: database
+  ports:
+  - name: oracle
+    protocol: TCP
+    port: 1521
+    targetPort: 1521
+  - name: oem
+    protocol: TCP
+    port: 5500
+    targetPort: 5500
+---
+# Backend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: fullstack-app
+  labels:
+    app: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: backend
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  sessionAffinity: ClientIP  # Sticky Sessions (optional)
+---
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: fullstack-app
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+

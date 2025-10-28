@@ -1,0 +1,15 @@
+# PersistentVolumeClaim für Oracle Database
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-pvc
+  namespace: fullstack-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  # storageClassName: local-path  # k3s default
+  # Für andere Cluster: gp2 (AWS), standard (GCP), etc.
+
