@@ -97,8 +97,8 @@ const error = ref<string | null>(null)
 onMounted(async () => {
   try {
     const [healthRes, infoRes] = await Promise.all([
-      apiClient.get('/health'),
-      apiClient.get('/info')
+      apiClient.get('/api/health'),
+      apiClient.get('/api/info')
     ])
     health.value = healthRes.data
     backendInfo.value = infoRes.data
