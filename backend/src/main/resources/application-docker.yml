@@ -1,8 +1,8 @@
 # Konfiguration für Docker Container
 spring:
   datasource:
-    url: jdbc:oracle:thin:@database:1521/FREEPDB1
-    username: appuser
+    url: jdbc:oracle:thin:@${DB_HOST:database}:${DB_PORT:1521}/${DB_SERVICE:FREEPDB1}
+    username: ${DB_USER:appuser}
     password: ${DB_PASSWORD:Oracle123}
 
   jpa:

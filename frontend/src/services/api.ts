@@ -18,9 +18,14 @@ const getBackendUrl = () => {
     return 'http://localhost:8080'
   }
 
-  // Wenn über frontend.local zugegriffen wird
+  // Wenn über frontend.local zugegriffen wird (Docker Compose)
   if (hostname === 'frontend.local') {
     return 'http://backend.local:8081'
+  }
+
+  // Wenn über myapp.local zugegriffen wird (Kubernetes)
+  if (hostname === 'myapp.local') {
+    return 'http://myapp.local'
   }
 
   // Sonst: Nutze die gleiche IP wie das Frontend, aber Port 8080

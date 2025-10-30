@@ -5,7 +5,7 @@ metadata:
   name: backend-config
   namespace: fullstack-app
 data:
-  DB_HOST: "database-service"
+  DB_HOST: "database-service"  # Verbindung zur Docker-Datenbank über ExternalName Service
   DB_PORT: "1521"
   DB_SERVICE: "FREEPDB1"
   DB_USER: "appuser"
@@ -19,5 +19,5 @@ metadata:
   name: frontend-config
   namespace: fullstack-app
 data:
-  BACKEND_URL: "http://backend-service:8080"
+  BACKEND_URL: "http://myapp.local/api"
 
