@@ -8,7 +8,7 @@ global:
 
 # Database configuration
 database:
-  enabled: true
+  enabled: false  # Wir nutzen die Docker-Datenbank!
   name: database
   image:
     repository: gvenzl/oracle-free

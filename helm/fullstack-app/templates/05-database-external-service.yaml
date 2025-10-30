@@ -1,0 +1,33 @@
+{{- if not .Values.database.enabled }}
+# Service für Docker-Datenbank auf dem Host
+# Wird nur deployed wenn database.enabled=false (Docker-Datenbank wird genutzt)
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "fullstack-app.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: oracle
+    port: 1521
+    targetPort: 1521
+    protocol: TCP
+---
+# Endpoints für den Service (zeigt auf Host-Gateway IP)
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: database-service
+  namespace: {{ .Values.global.namespace }}
+subsets:
+- addresses:
+  - ip: 172.17.0.1  # Docker Bridge Gateway - Kubernetes kann darüber die Docker-Container erreichen
+  ports:
+  - name: oracle
+    port: 1521
+    protocol: TCP
+{{- end }}
+

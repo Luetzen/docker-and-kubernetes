@@ -1,0 +1,9 @@
+# Custom Values für Docker-Database Setup
+# Verwende diese Datei mit: helm install fullstack-app ./helm/fullstack-app -f values-docker-db.yaml
+
+# Datenbank läuft in Docker, nicht in Kubernetes!
+database:
+  enabled: false
+
+# Alle anderen Werte bleiben wie in values.yaml
+
