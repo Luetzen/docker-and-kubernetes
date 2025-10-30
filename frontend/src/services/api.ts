@@ -15,7 +15,7 @@ const getBackendUrl = () => {
 
   // Wenn über localhost zugegriffen wird
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8080'
+    return 'http://localhost:8081'
   }
 
   // Wenn über frontend.local zugegriffen wird (Docker Compose)
