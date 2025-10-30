@@ -1,26 +1,13 @@
-# Service für Docker-Datenbank auf dem Host (ohne Selector)
+# Service für Docker-Datenbank auf dem Host
+# Verwendet ExternalName um auf host.docker.internal zu zeigen
 apiVersion: v1
 kind: Service
 metadata:
   name: database-service
   namespace: fullstack-app
 spec:
-  type: ClusterIP
-  ports:
-  - name: oracle
-    port: 1521
-    targetPort: 1521
-    protocol: TCP
----
-# Endpoints für den Service (zeigt auf host.docker.internal IP)
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: database-service
-  namespace: fullstack-app
-subsets:
-- addresses:
-  - ip: 192.168.65.254  # host.docker.internal IP
+  type: ExternalName
+  externalName: host.docker.internal
   ports:
   - name: oracle
     port: 1521
