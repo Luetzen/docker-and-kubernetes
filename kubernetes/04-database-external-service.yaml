@@ -1,0 +1,29 @@
+# Service für Docker-Datenbank auf dem Host
+# ClusterIP Service mit Endpoints auf Docker Bridge Gateway
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+  namespace: fullstack-app
+spec:
+  type: ClusterIP
+  ports:
+  - name: oracle
+    port: 1521
+    targetPort: 1521
+    protocol: TCP
+---
+# Endpoints für den Service (zeigt auf Docker Bridge Gateway IP)
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: database-service
+  namespace: fullstack-app
+subsets:
+- addresses:
+  - ip: 172.17.0.1  # Docker Bridge Gateway - Kubernetes kann darüber die Docker-Container erreichen
+  ports:
+  - name: oracle
+    port: 1521
+    protocol: TCP
+
