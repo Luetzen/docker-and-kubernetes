@@ -21,7 +21,7 @@ metadata:
   namespace: fullstack-app
 subsets:
 - addresses:
-  - ip: 172.17.0.1  # Docker Bridge Gateway - Kubernetes kann darüber die Docker-Container erreichen
+  - ip: 192.168.65.254  # Docker Desktop Gateway - Kubernetes kann darüber die Docker-Container auf dem Host erreichen
   ports:
   - name: oracle
     port: 1521

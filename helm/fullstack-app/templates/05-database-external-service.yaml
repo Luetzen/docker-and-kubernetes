@@ -12,8 +12,8 @@ spec:
   type: ClusterIP
   ports:
   - name: oracle
-    port: 1521
-    targetPort: 1521
+    port: {{ .Values.database.service.port }}
+    targetPort: {{ .Values.database.service.port }}
     protocol: TCP
 ---
 # Endpoints für den Service (zeigt auf Host-Gateway IP)
@@ -24,10 +24,10 @@ metadata:
   namespace: {{ .Values.global.namespace }}
 subsets:
 - addresses:
-  - ip: 172.17.0.1  # Docker Bridge Gateway - Kubernetes kann darüber die Docker-Container erreichen
+  - ip: {{ .Values.database.externalHost }}  # Docker Bridge Gateway - Kubernetes kann darüber die Docker-Container erreichen
   ports:
   - name: oracle
-    port: 1521
+    port: {{ .Values.database.service.port }}
     protocol: TCP
 {{- end }}
 

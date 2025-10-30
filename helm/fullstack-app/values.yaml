@@ -10,6 +10,8 @@ global:
 database:
   enabled: false  # Wir nutzen die Docker-Datenbank!
   name: database
+  externalHost: "192.168.65.254"  # Docker Desktop Gateway IP für externe Docker-Datenbank (Windows)
+
   image:
     repository: gvenzl/oracle-free
     tag: latest
