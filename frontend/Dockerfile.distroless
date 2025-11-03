@@ -1,0 +1,60 @@
+# Docker DISTROLESS Multi-Stage Build (BEST PRACTICE für maximale Sicherheit!)
+# Dieses Dockerfile nutzt Google's Distroless Images für minimale Angriffsfläche
+# Problem: Distroless hat KEINEN Webserver, daher nutzen wir nginx-unprivileged
+# Alternative: Caddy oder ein echtes Static-Distroless mit einem Micro-Webserver
+
+# --- STAGE 1: Build-Umgebung ---
+FROM docker.io/library/node:22-alpine AS builder
+
+ARG APP_VERSION=1.0.0
+
+WORKDIR /app
+
+# Package files zuerst (für besseres Caching)
+COPY package*.json ./
+
+# Dependencies installieren (inkl. dev für Build)
+RUN npm install
+
+# Source Code kopieren
+COPY . .
+
+# Production Build mit Version
+RUN VITE_APP_VERSION=$APP_VERSION npm run build -- --mode production
+
+# --- STAGE 2: Minimales Produktions-Image ---
+# Hinweis: Für statische Frontend-Dateien verwenden wir nginx-alpine-slim
+# da Google Distroless/static keinen Webserver enthält
+# Eine Alternative wäre: gcr.io/distroless/static-debian12 + ein Go-basierter Micro-Webserver
+FROM docker.io/nginxinc/nginx-unprivileged:1.27-alpine
+
+LABEL maintainer="luetzen.nahne@gmail.com"
+LABEL description="Vue.js 3 Frontend - Distroless-ähnlich mit nginx-unprivileged (Sicherheit optimiert!)"
+LABEL security="Läuft als non-root User, minimale Angriffsfläche"
+
+# Gebaute Dateien aus Builder kopieren
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Nginx-Konfiguration kopieren
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+# Entrypoint-Skript kopieren
+COPY entrypoint.sh /entrypoint.sh
+
+# Skript ausführbar machen (als root vor USER switch)
+USER root
+RUN chmod +x /entrypoint.sh && \
+    chown -R nginx:nginx /usr/share/nginx/html
+
+# Als nginx User ausführen (Non-root!)
+USER nginx
+
+EXPOSE 8080
+
+# Health Check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
+
+# Starte mit Entrypoint-Skript
+CMD ["/entrypoint.sh"]
+

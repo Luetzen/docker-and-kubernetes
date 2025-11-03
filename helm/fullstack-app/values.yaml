@@ -12,8 +12,6 @@ database:
   name: database
   externalHost: "192.168.65.254"  # Docker Desktop Gateway IP für externe Docker-Datenbank (Windows)
 
-  image:
-    repository: gvenzl/oracle-free
     tag: latest
     pullPolicy: IfNotPresent
 

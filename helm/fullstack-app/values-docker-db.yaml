@@ -5,6 +5,5 @@
 database:
   enabled: false
   externalHost: "192.168.65.254"  # Docker Desktop Gateway IP (Windows) - ändere dies falls nötig
-
 # Alle anderen Werte bleiben wie in values.yaml
 
