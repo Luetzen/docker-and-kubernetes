@@ -80,30 +80,6 @@ if errorlevel 1 (
 )
 cd ..
 
-REM Nginx Proxy Image
-echo.
-echo ========================================
-echo [3/3] Building Nginx Proxy Image...
-echo ========================================
-cd nginx
-docker build -t ghcr.io/%GITHUB_USER%/%REPO_NAME%/nginx-proxy:latest -t ghcr.io/%GITHUB_USER%/%REPO_NAME%/nginx-proxy:%VERSION% .
-if errorlevel 1 (
-    echo ERROR: Nginx build failed!
-    cd ..
-    pause
-    exit /b 1
-)
-
-echo Pushing Nginx Proxy Image...
-docker push ghcr.io/%GITHUB_USER%/%REPO_NAME%/nginx-proxy:latest
-docker push ghcr.io/%GITHUB_USER%/%REPO_NAME%/nginx-proxy:%VERSION%
-if errorlevel 1 (
-    echo ERROR: Nginx push failed!
-    cd ..
-    pause
-    exit /b 1
-)
-cd ..
 
 REM Erfolg!
 echo.
@@ -116,8 +92,6 @@ echo   - ghcr.io/%GITHUB_USER%/%REPO_NAME%/backend:latest
 echo   - ghcr.io/%GITHUB_USER%/%REPO_NAME%/backend:%VERSION%
 echo   - ghcr.io/%GITHUB_USER%/%REPO_NAME%/frontend:latest
 echo   - ghcr.io/%GITHUB_USER%/%REPO_NAME%/frontend:%VERSION%
-echo   - ghcr.io/%GITHUB_USER%/%REPO_NAME%/nginx-proxy:latest
-echo   - ghcr.io/%GITHUB_USER%/%REPO_NAME%/nginx-proxy:%VERSION%
 echo.
 echo View your packages at:
 echo https://github.com/%GITHUB_USER%?tab=packages
